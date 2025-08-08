@@ -5,8 +5,14 @@ services:
     image: postgres:16-alpine
     environment:
       POSTGRES_DB: tracktracker
-      POSTGRES_USER: track
-      POSTGRES_PASSWORD: trackpwd
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      # database name can also be overridden if you set POSTGRES_DB
+      # otherwise it keeps default above
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}"]
+      interval: 10s
+      retries: 5
     volumes: [ pg_data:/var/lib/postgresql/data ]
 
   backend:
@@ -14,9 +20,9 @@ services:
     depends_on:
       db: { condition: service_healthy }
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/tracktracker
-      SPRING_DATASOURCE_USERNAME: track
-      SPRING_DATASOURCE_PASSWORD: trackpwd
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
       TRACK_SEED_SIZE: 50
     secrets:
       - spotify_client_id
