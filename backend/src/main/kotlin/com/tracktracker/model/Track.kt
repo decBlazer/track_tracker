@@ -22,6 +22,9 @@ data class Track(
     @Column(name = "release_year")
     val releaseYear: Int? = null,
 
+    @Column(name = "image_url")
+    val imageUrl: String? = null,
+
     @Column(name = "created_at")
     val createdAt: LocalDateTime = LocalDateTime.now(),
 

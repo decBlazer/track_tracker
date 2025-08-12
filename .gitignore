@@ -32,3 +32,4 @@ pg_data/
 *.bak 
 
 backend/src/main/resources/static/
+/secrets
